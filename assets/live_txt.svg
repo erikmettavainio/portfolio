@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 682.15 136.46">
+  <defs>
+    <style>
+      .cls-1 {
+        font-size: 28.35px;
+      }
+
+      .cls-2 {
+        font-family: 'bianzhidai_noBG-Ring', bianzhidai_noBG;
+      }
+
+      .cls-3 {
+        text-decoration: underline;
+      }
+
+      .cls-3, .cls-4, .cls-5, .cls-6 {
+        font-weight: 300;
+      }
+
+      .cls-3, .cls-4, .cls-6 {
+        font-family: Helvetica-Light, Helvetica;
+      }
+
+      .cls-4 {
+        letter-spacing: 0em;
+      }
+
+      .cls-5 {
+        font-family: Helvetica-LightOblique, Helvetica;
+        font-style: oblique;
+      }
+    </style>
+  </defs>
+  <g id="Layer_1-2" data-name="Layer 1">
+    <text class="cls-1" transform="translate(0 24.35)"><tspan class="cls-3"><tspan x="0" y="0">2026</tspan></tspan><tspan class="cls-2" x="0" y="34.02">~</tspan><tspan class="cls-4" x="20.58" y="34.02">Poesimässan, Stockholm: </tspan><tspan class="cls-5" x="352.97" y="34.02">Ray Tracing</tspan><tspan class="cls-6" x="505.78" y="34.02">, TBA</tspan><tspan class="cls-2" x="0" y="68.03">~</tspan><tspan class="cls-6" x="20.58" y="68.03">Norbergfestival, Norberg: KMH Showcase, July 11th</tspan><tspan class="cls-2" x="0" y="102.05">~</tspan><tspan class="cls-6" x="20.58" y="102.05">Nytt elektroakustiskt, Stockholm: April 28th</tspan></text>
+  </g>
+</svg>

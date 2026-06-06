@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Contact — Erik Mettävainio</title>
+
+<style>
+@font-face {
+  font-family: "Bianzhidai";
+  src: url("assets/fonts/bianzhidai.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "HelveticaCustom";
+  src: url("assets/fonts/helveticaneue-light.woff2");
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  background: white;
+  transition: filter 0.15s ease;
+}
+
+html.invert-click {
+  filter: invert(1);
+}
+
+body {
+  background: white;
+  color: black;
+  font-family: "HelveticaCustom", Helvetica, Arial, sans-serif;
+  font-weight: 300;
+}
+
+.contact-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 70px 24px;
+}
+
+.contact-container {
+  width: 100%;
+  max-width: 470px;
+}
+
+.page-title {
+  font-size: 52px;
+  font-weight: 300;
+  margin-bottom: 28px;
+  line-height: 1;
+}
+
+.tilde {
+  font-family: "Bianzhidai", monospace;
+  font-size: 32px;
+  margin-right: 4px;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  font-size: 18px;
+  line-height: 1.35;
+}
+
+.mail {
+  margin-bottom: 28px;
+}
+
+a {
+  color: black;
+  text-decoration: underline;
+  transition: opacity .2s ease, transform .25s ease;
+}
+
+a:hover {
+  opacity: .6;
+  transform: translateX(4px);
+}
+
+.star-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 260px;
+}
+
+.star {
+  width: 70px;
+  transition: transform .4s ease;
+}
+
+.star:hover {
+  transform: rotate(90deg);
+}
+
+@media (max-width: 600px) {
+  .page-title {
+    font-size: 42px;
+  }
+
+  .tilde {
+    font-size: 28px;
+  }
+
+  .links {
+    font-size: 17px;
+  }
+
+  .star-wrapper {
+    margin-top: 180px;
+  }
+}
+</style>
+</head>
+
+<script>
+document.addEventListener("mousedown", () => {
+  document.documentElement.classList.add("invert-click");
+});
+
+document.addEventListener("mouseup", () => {
+  document.documentElement.classList.remove("invert-click");
+});
+
+document.addEventListener("mouseleave", () => {
+  document.documentElement.classList.remove("invert-click");
+});
+</script>
+
+<body>
+
+    <div class="smooth-cursor"></div>
+<div class="pixel-lens"></div>
+
+<main class="contact-page">
+  <section class="contact-container">
+
+    <h1 class="page-title">
+      <span class="tilde">~</span>Contact
+    </h1>
+
+    <div class="links">
+      <a class="mail" href="mailto:erikmett2@gmail.com">
+        erikmett2@gmail.com
+      </a>
+
+      <a
+        href="https://www.instagram.com/ebmett1000000"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        ~Instagram
+      </a>
+
+      <a
+        href="https://erikmettavainio.bandcamp.com"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        ~Bandcamp
+      </a>
+    </div>
+
+    <div class="star-wrapper">
+  <a href="index.html" class="star-link">
+    <img
+      class="star"
+      src="assets/about_star.svg"
+      alt="Home"
+    >
+  </a>
+</div>
+    </div>
+
+  </section>
+</main>
+
+</body>
+</html>

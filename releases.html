@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Releases — Erik Mettävainio</title>
+
+<style>
+
+@font-face {
+  font-family: "Bianzhidai";
+  src: url("assets/fonts/bianzhidai.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "HelveticaCustom";
+  src: url("assets/fonts/helveticaneue-light.woff2");
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  background: white;
+  transition: filter 0.15s ease;
+}
+
+html.invert-click {
+  filter: invert(1);
+}
+
+body {
+  background: white;
+  color: black;
+  font-family: "HelveticaCustom", Helvetica, Arial, sans-serif;
+  font-weight: 300;
+}
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 70px 24px;
+}
+
+.container {
+  width: 100%;
+  max-width: 820px;
+}
+
+/* HEADER */
+
+.page-title {
+  font-size: 52px;
+  font-weight: 300;
+  margin-bottom: 40px;
+  line-height: 1;
+}
+
+.tilde {
+  font-family: "Bianzhidai", monospace;
+  font-size: 32px;
+  margin-right: 4px;
+}
+
+/* RELEASE GRID */
+
+.releases-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+}
+
+/* RELEASE */
+
+.release {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.cover {
+  width: 100px;
+  margin-bottom: 18px;
+}
+
+.album-title {
+  font-family: "Bianzhidai", monospace;
+  font-size: 18px;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.release-date {
+  font-size: 18px;
+  line-height: 1.35;
+  margin-bottom: 24px;
+}
+
+.description {
+  font-size: 18px;
+  line-height: 1.35;
+  margin-bottom: 24px;
+}
+
+/* BANDCAMP */
+
+.bandcamp-link {
+  color: black;
+  text-decoration: underline;
+  font-size: 18px;
+  font-weight: 300;
+  transition: opacity .2s ease;
+}
+
+.bandcamp-link:hover {
+  opacity: .6;
+}
+
+/* STAR */
+
+.star-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.star {
+  width: 70px;
+  transition: transform .4s ease;
+}
+
+.star:hover {
+  transform: rotate(90deg);
+}
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+
+  .page-title {
+    font-size: 42px;
+  }
+
+  .tilde {
+    font-size: 28px;
+  }
+
+  .releases-grid {
+    grid-template-columns: 1fr;
+    gap: 50px;
+  }
+
+  .cover {
+    width: 120px;
+  }
+
+  .album-title,
+  .release-date,
+  .description,
+  .bandcamp-link {
+    font-size: 17px;
+  }
+}
+
+</style>
+</head>
+
+<script>
+document.addEventListener("mousedown", () => {
+  document.documentElement.classList.add("invert-click");
+});
+
+document.addEventListener("mouseup", () => {
+  document.documentElement.classList.remove("invert-click");
+});
+
+document.addEventListener("mouseleave", () => {
+  document.documentElement.classList.remove("invert-click");
+});
+</script>
+
+<body>
+
+    <div class="smooth-cursor"></div>
+<div class="pixel-lens"></div>
+
+<main class="page">
+
+<section class="container">
+
+  <h1 class="page-title">
+    <span class="tilde">~</span>Releases
+  </h1>
+
+  <div class="releases-grid">
+
+    <!-- RETURN TO THE CITY -->
+
+    <article class="release">
+
+      <img
+        class="cover"
+        src="assets/rttc_image.png"
+        alt="Return To The City"
+      >
+
+      <h2 class="album-title">
+        RETURN TO THE CITY
+      </h2>
+
+      <p class="release-date">
+        (EP, 27 June 2025)
+      </p>
+
+      <p class="description">
+        Using field recordings, found sounds, electronics and vocal
+        arrangements, “Return To The City” explores the dichotomy of
+        modern urbanism.
+      </p>
+
+      <p class="description">
+        Recorded and realised using the Elektron Digitakt system,
+        field recordings, choir, violin, accordion and percussion.
+      </p>
+
+      <a
+        class="bandcamp-link"
+        href="https://erikmettavainio.bandcamp.com/album/return-to-the-city"
+        target="_blank"
+      >
+        Read more on ~Bandcamp
+      </a>
+
+    </article>
+
+    <!-- ALKIMIA -->
+
+    <article class="release">
+
+      <img
+        class="cover"
+        src="assets/alkimia_image.png"
+        alt="Alkimia"
+      >
+
+      <h2 class="album-title">
+        ALKIMIA
+      </h2>
+
+      <p class="release-date">
+        (Single, 28 April 2026)
+      </p>
+
+      <p class="description">
+        Fixed media piece written for 16 channels.
+      </p>
+
+      <p class="description">
+        Among large FM bells, birdsong, microscopic percussion,
+        zither, modular synthesis and complex clusters of distorted
+        vocals, Alkimia is an imagined soundtrack to the
+        protoscientific alchemical attempts to obtain gold from
+        common earth metals in medieval times.
+      </p>
+
+      <a
+        class="bandcamp-link"
+        href="https://erikmettavainio.bandcamp.com/track/alkimia"
+        target="_blank"
+      >
+        Read more on ~Bandcamp
+      </a>
+
+    </article>
+
+  </div>
+
+  <div class="star-wrapper">
+  <a href="index.html" class="star-link">
+    <img
+      class="star"
+      src="assets/about_star.svg"
+      alt="Home"
+    >
+  </a>
+</div>
+
+</section>
+
+</main>
+
+</body>
+</html>

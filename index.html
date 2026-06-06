@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Erik Mettävainio</title>
+
+<style>
+@font-face {
+  font-family: "Bianzhidai";
+  src: url("assets/fonts/bianzhidai.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "HelveticaCustom";
+  src: url("assets/fonts/helveticaneue-light.woff2");
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  background: white;
+  transition: filter 0.15s ease;
+}
+
+html.invert-click {
+  filter: invert(1);
+}
+
+body {
+  background: white;
+  color: black;
+  font-family: "HelveticaCustom", Helvetica, Arial, sans-serif;
+  font-weight: 300;
+  overflow: hidden;
+}
+
+.home-page {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+
+.home-star {
+  width: 380px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.nav-link {
+  position: absolute;
+  color: black;
+  text-decoration: none;
+  font-size: 52px;
+  font-weight: 300;
+  line-height: 1;
+  transition: opacity .2s ease, transform .25s ease;
+}
+
+.nav-link:hover {
+  opacity: .6;
+}
+
+.tilde {
+  font-family: "Bianzhidai", monospace;
+  font-size: 32px;
+  margin-right: 4px;
+  vertical-align: 5px;
+}
+
+@media (max-width: 700px) {
+  body {
+    overflow: auto;
+  }
+
+  .home-page {
+    min-height: 100vh;
+    height: auto;
+    padding: 70px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .home-star {
+    position: static;
+    transform: none;
+    width: 100%;
+    max-width: 360px;
+    margin-bottom: 40px;
+  }
+
+  .nav-link {
+    position: static;
+    font-size: 42px;
+    margin-bottom: 26px;
+  }
+
+  .tilde {
+    font-size: 28px;
+  }
+}
+</style>
+</head>
+
+<script>
+document.addEventListener("mousedown", () => {
+  document.documentElement.classList.add("invert-click");
+});
+
+document.addEventListener("mouseup", () => {
+  document.documentElement.classList.remove("invert-click");
+});
+
+document.addEventListener("mouseleave", () => {
+  document.documentElement.classList.remove("invert-click");
+});
+</script>
+
+<body>
+
+
+<main class="home-page">
+
+  <img
+    class="home-star"
+    src="assets/home_star.svg"
+    alt=""
+  >
+
+  <a class="nav-link" href="about.html"><span class="tilde">~</span>About</a>
+  <a class="nav-link" href="contact.html"><span class="tilde">~</span>Contact</a>
+  <a class="nav-link" href="releases.html"><span class="tilde">~</span>Releases</a>
+  <a class="nav-link" href="commissions.html"><span class="tilde">~</span>Commissions</a>
+  <a class="nav-link" href="live.html"><span class="tilde">~</span>Live</a>
+
+</main>
+
+<script>
+const links = document.querySelectorAll(".nav-link");
+
+const zones = [
+  { x: 18, y: 18 },
+  { x: 62, y: 18 },
+  { x: 14, y: 62 },
+  { x: 58, y: 66 },
+  { x: 42, y: 82 }
+];
+
+function shuffle(array) {
+  return array.sort(() => Math.random() - 0.5);
+}
+
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+if (window.innerWidth > 700) {
+  const shuffledZones = shuffle([...zones]);
+
+  const movers = [];
+
+  links.forEach((link, index) => {
+    const zone = shuffledZones[index];
+
+    const x = (zone.x + (Math.random() * 12 - 6)) / 100 * window.innerWidth;
+    const y = (zone.y + (Math.random() * 10 - 5)) / 100 * window.innerHeight;
+
+    movers.push({
+      element: link,
+      x,
+      y,
+      vx: (Math.random() - 0.5) * 0.25,
+      vy: (Math.random() - 0.5) * 0.25,
+      rotation: Math.random() * 8 - 4,
+      vr: (Math.random() - 0.5) * 0.025
+    });
+  });
+
+  function animate() {
+    movers.forEach(item => {
+      const rect = item.element.getBoundingClientRect();
+
+      item.x += item.vx;
+      item.y += item.vy;
+      item.rotation += item.vr;
+
+      if (item.x <= 0 || item.x + rect.width >= window.innerWidth) {
+        item.vx *= -1;
+      }
+
+      if (item.y <= 0 || item.y + rect.height >= window.innerHeight) {
+        item.vy *= -1;
+      }
+
+      item.x = clamp(item.x, 0, window.innerWidth - rect.width);
+      item.y = clamp(item.y, 0, window.innerHeight - rect.height);
+
+      item.element.style.left = item.x + "px";
+      item.element.style.top = item.y + "px";
+      item.element.style.transform = `rotate(${item.rotation}deg)`;
+    });
+
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+}
+</script>
+
+</body>
+</html>

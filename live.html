@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Live — Erik Mettävainio</title>
+
+<style>
+@font-face {
+  font-family: "Bianzhidai";
+  src: url("assets/fonts/bianzhidai.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "HelveticaCustom";
+  src: url("assets/fonts/helveticaneue-light.woff2");
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  background: white;
+  transition: filter 0.15s ease;
+}
+
+html.invert-click {
+  filter: invert(1);
+}
+
+body {
+  background: white;
+  color: black;
+  font-family: "HelveticaCustom", Helvetica, Arial, sans-serif;
+  font-weight: 300;
+}
+
+.live-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 70px 24px;
+}
+
+.live-container {
+  width: 100%;
+  max-width: 470px;
+}
+
+.page-title {
+  font-size: 52px;
+  font-weight: 300;
+  margin-bottom: 28px;
+  line-height: 1;
+}
+
+.tilde {
+  font-family: "Bianzhidai", monospace;
+  font-size: 32px;
+  margin-right: 4px;
+  vertical-align: 5px;
+}
+
+.year {
+  font-size: 18px;
+  font-weight: 300;
+  text-decoration: underline;
+  margin-bottom: 4px;
+}
+
+.live-list {
+  list-style: none;
+  font-size: 18px;
+  line-height: 1.35;
+  font-weight: 300;
+}
+
+.live-list li::before {
+  content: "~";
+  font-family: "Bianzhidai", monospace;
+  margin-right: 2px;
+}
+
+.star-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 320px;
+}
+
+.star {
+  width: 70px;
+  transition: transform .4s ease;
+}
+
+.star:hover {
+  transform: rotate(90deg);
+}
+
+@media (max-width: 600px) {
+  .page-title {
+    font-size: 42px;
+  }
+
+  .tilde {
+    font-size: 28px;
+  }
+
+  .year,
+  .live-list {
+    font-size: 17px;
+  }
+
+  .star-wrapper {
+    margin-top: 220px;
+  }
+}
+</style>
+</head>
+
+<script>
+document.addEventListener("mousedown", () => {
+  document.documentElement.classList.add("invert-click");
+});
+
+document.addEventListener("mouseup", () => {
+  document.documentElement.classList.remove("invert-click");
+});
+
+document.addEventListener("mouseleave", () => {
+  document.documentElement.classList.remove("invert-click");
+});
+</script>
+
+<body>
+
+    <div class="smooth-cursor"></div>
+<div class="pixel-lens"></div>
+
+<main class="live-page">
+  <section class="live-container">
+
+    <h1 class="page-title">
+      <span class="tilde">~</span>Live
+    </h1>
+
+    <p class="year">2026</p>
+
+    <ul class="live-list">
+      <li>Poesimässan, Stockholm: <em>Ray Tracing</em>, TBA</li>
+      <li>Norbergfestival, Norberg: KMH Showcase, July 11th</li>
+      <li>Nytt elektroakustiskt, Stockholm: April 28th</li>
+    </ul>
+
+   <div class="star-wrapper">
+  <a href="index.html" class="star-link">
+    <img
+      class="star"
+      src="assets/about_star.svg"
+      alt="Home"
+    >
+  </a>
+</div>
+
+  </section>
+</main>
+
+</body>
+</html>

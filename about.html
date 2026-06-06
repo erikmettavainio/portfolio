@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>About — Erik Mettävainio</title>
+
+<style>
+@font-face {
+  font-family: "Bianzhidai";
+  src: url("assets/fonts/bianzhidai.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "HelveticaCustom";
+  src: url("assets/fonts/helveticaneue-light.woff2") format("woff2");
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  background: white;
+  transition: filter 0.15s ease;
+}
+
+html.invert-click {
+  filter: invert(1);
+}
+
+body {
+  background: white;
+  color: black;
+  font-family: "HelveticaCustom", Helvetica, Arial, sans-serif;
+  font-weight: 300;
+}
+
+.about-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 70px 24px;
+}
+
+.about-container {
+  width: 100%;
+  max-width: 470px;
+}
+
+.page-title {
+  font-size: 52px;
+  font-weight: 300;
+  margin-bottom: 40px;
+  line-height: 1;
+}
+
+.tilde {
+  font-family: "Bianzhidai", monospace;
+  font-size: 32px;
+  margin-right: 4px;
+}
+
+.profile-image {
+  width: 98px;
+  display: block;
+  margin-bottom: 18px;
+}
+
+.bio {
+  font-size: 18px;
+  line-height: 1.35;
+  font-weight: 300;
+}
+
+.bio p {
+  margin-bottom: 24px;
+}
+
+.name {
+  font-family: "Bianzhidai", monospace;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.birth-year {
+  font-size: 18px;
+  font-weight: 300;
+}
+
+.star-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.star-link {
+  display: inline-block;
+}
+
+.star {
+  width: 70px;
+  transition: transform .4s ease, opacity .3s ease;
+}
+
+.star-link:hover .star {
+  transform: rotate(90deg) scale(1.08);
+  opacity: .8;
+}
+
+@media (max-width: 600px) {
+  .page-title {
+    font-size: 42px;
+  }
+
+  .tilde {
+    font-size: 28px;
+  }
+
+  .bio,
+  .name,
+  .birth-year {
+    font-size: 17px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<main class="about-page">
+  <section class="about-container">
+
+    <h1 class="page-title">
+      <span class="tilde">~</span>About
+    </h1>
+
+    <img
+      class="profile-image"
+      src="assets/about_image.png"
+      alt="Erik Mettävainio"
+    >
+
+    <div class="bio">
+      <p>
+        <span class="name">ERIK METTÄVAINIO</span>
+        <span class="birth-year">(b. 2004)</span>
+        works with recorded and synthesised materials to form
+        organic and texturally diverse compositions, largely
+        based on gesture and scale as a material itself.
+        Initially trained as a jazz vocalist, he later turned
+        toward electro-acoustic composition through an interest
+        in timbre and dense harmony, often translating vocal
+        phrasings into electronic contexts.
+        His work exhibits themes of nature romanticism and
+        urbanism, and particularly the constructing of identity
+        within and between these contexts.
+      </p>
+
+      <p>
+        He is currently studying electro-acoustic composition
+        at the Royal College of Music in Stockholm.
+      </p>
+    </div>
+
+    <div class="star-wrapper">
+      <a href="index.html" class="star-link">
+        <img
+          class="star"
+          src="assets/about_star.svg"
+          alt="Home"
+        >
+      </a>
+    </div>
+
+  </section>
+</main>
+
+<script>
+document.addEventListener("mousedown", () => {
+  document.documentElement.classList.add("invert-click");
+});
+
+document.addEventListener("mouseup", () => {
+  document.documentElement.classList.remove("invert-click");
+});
+
+document.addEventListener("mouseleave", () => {
+  document.documentElement.classList.remove("invert-click");
+});
+</script>
+
+</body>
+</html>
