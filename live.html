@@ -96,8 +96,38 @@ body {
   transition: transform .4s ease;
 }
 
-.star:hover {
-  transform: rotate(90deg);
+.star {
+  width: 70px;
+  transition: opacity .2s ease;
+}
+
+.star-link {
+  display: inline-block;
+  text-decoration: none;
+  transition: none;
+}
+
+.star-link:hover {
+  opacity: 1;
+  transform: none;
+}
+
+.star {
+  width: 70px;
+  transition: filter .2s ease;
+}
+
+.star-link:hover .star {
+  filter: blur(4px);
+}
+
+.font-react-letter {
+  display: inline-block;
+  transition: font-family 0.08s ease;
+}
+
+.font-react-letter.touched {
+  font-family: "Bianzhidai", monospace;
 }
 
 @media (max-width: 600px) {
@@ -121,31 +151,14 @@ body {
 </style>
 </head>
 
-<script>
-document.addEventListener("mousedown", () => {
-  document.documentElement.classList.add("invert-click");
-});
-
-document.addEventListener("mouseup", () => {
-  document.documentElement.classList.remove("invert-click");
-});
-
-document.addEventListener("mouseleave", () => {
-  document.documentElement.classList.remove("invert-click");
-});
-</script>
-
 <body>
-
-    <div class="smooth-cursor"></div>
-<div class="pixel-lens"></div>
 
 <main class="live-page">
   <section class="live-container">
 
     <h1 class="page-title">
-      <span class="tilde">~</span>Live
-    </h1>
+  <span class="tilde">~</span><span class="reactive-header">Live</span>
+</h1>
 
     <p class="year">2026</p>
 
@@ -167,6 +180,51 @@ document.addEventListener("mouseleave", () => {
 
   </section>
 </main>
+
+<script>
+/* Header font-react effect */
+
+document.querySelectorAll(".reactive-header").forEach(element => {
+  const text = element.textContent;
+  element.innerHTML = "";
+
+  [...text].forEach(char => {
+    const span = document.createElement("span");
+    span.textContent = char;
+    span.className = "font-react-letter";
+    element.appendChild(span);
+  });
+});
+
+const letters = document.querySelectorAll(".font-react-letter");
+const radius = 70;
+
+document.addEventListener("mousemove", e => {
+  letters.forEach(letter => {
+    const rect = letter.getBoundingClientRect();
+
+    const dx = e.clientX - (rect.left + rect.width / 2);
+    const dy = e.clientY - (rect.top + rect.height / 2);
+    const distance = Math.hypot(dx, dy);
+
+    letter.classList.toggle("touched", distance < radius);
+  });
+});
+
+/* Click invert */
+
+document.addEventListener("mousedown", () => {
+  document.documentElement.classList.add("invert-click");
+});
+
+document.addEventListener("mouseup", () => {
+  document.documentElement.classList.remove("invert-click");
+});
+
+document.addEventListener("mouseleave", () => {
+  document.documentElement.classList.remove("invert-click");
+});
+</script>
 
 </body>
 </html>

@@ -14,7 +14,7 @@
 
 @font-face {
   font-family: "HelveticaCustom";
-  src: url("assets/fonts/helveticaneue-light.woff2");
+  src: url("assets/fonts/helveticaneue-light.woff2") format("woff2");
 }
 
 * {
@@ -46,13 +46,48 @@ body {
   position: relative;
 }
 
-.home-star {
+/* STAR */
+
+.home-star-wrap {
   width: 380px;
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
 }
+
+.home-star {
+  width: 100%;
+  display: block;
+  filter: blur(0px) contrast(100%);
+  transition: filter 0.12s ease;
+}
+
+.home-star.morphing {
+  filter: blur(9px) contrast(260%);
+}
+
+/* BIG WHITE HALFTONE DOTS */
+
+.home-star-wrap::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+
+  background-image: radial-gradient(
+    circle,
+    white 0.6px,
+    transparent 0.5px
+  );
+
+  background-size: 2.5px 2.5px;
+  mix-blend-mode: screen;
+  opacity: 0.9;
+}
+
+/* NAVIGATION */
 
 .nav-link {
   position: absolute;
@@ -61,7 +96,7 @@ body {
   font-size: 52px;
   font-weight: 300;
   line-height: 1;
-  transition: opacity .2s ease, transform .25s ease;
+  transition: opacity .2s ease;
 }
 
 .nav-link:hover {
@@ -75,65 +110,99 @@ body {
   vertical-align: 5px;
 }
 
+.font-react-letter {
+  display: inline-block;
+  transition: font-family 0.08s ease;
+}
+
+.font-react-letter.touched {
+  font-family: "Bianzhidai", monospace;
+}
+
+/* CREDIT */
+
+.font-credit {
+  position: fixed;
+  right: 24px;
+  bottom: 20px;
+  font-size: 8px;
+  line-height: 1;
+  color: black;
+  z-index: 10;
+}
+
+.font-credit-letter {
+  display: inline-block;
+  transition: font-family 0.12s ease;
+}
+
+.font-credit-letter.active {
+  font-family: "Bianzhidai", monospace;
+}
+
+/* MOBILE */
+
 @media (max-width: 700px) {
   body {
-    overflow: auto;
+    overflow: hidden;
   }
 
   .home-page {
-    min-height: 100vh;
-    height: auto;
-    padding: 70px 24px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    width: 100vw;
+    height: 100vh;
+    position: relative;
   }
 
-  .home-star {
-    position: static;
-    transform: none;
-    width: 100%;
-    max-width: 360px;
-    margin-bottom: 40px;
+  .home-star-wrap {
+    width: 260px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .home-star-wrap::after {
+    background-image: radial-gradient(
+      circle,
+      white 2.6px,
+      transparent 3.2px
+    );
+
+    background-size: 10px 10px;
   }
 
   .nav-link {
-    position: static;
-    font-size: 42px;
-    margin-bottom: 26px;
+    position: absolute;
+    font-size: 32px;
+    margin-bottom: 0;
   }
 
   .tilde {
-    font-size: 28px;
+    font-size: 24px;
+    vertical-align: 3px;
+  }
+
+  .font-credit {
+    font-size: 7px;
+    right: 14px;
+    bottom: 14px;
   }
 }
 </style>
 </head>
 
-<script>
-document.addEventListener("mousedown", () => {
-  document.documentElement.classList.add("invert-click");
-});
-
-document.addEventListener("mouseup", () => {
-  document.documentElement.classList.remove("invert-click");
-});
-
-document.addEventListener("mouseleave", () => {
-  document.documentElement.classList.remove("invert-click");
-});
-</script>
-
 <body>
-
 
 <main class="home-page">
 
+  <div class="home-star-wrap">
   <img
+    id="homeStar"
     class="home-star"
-    src="assets/home_star.svg"
+    src="assets/about_star.svg"
     alt=""
   >
+</div>
 
   <a class="nav-link" href="about.html"><span class="tilde">~</span>About</a>
   <a class="nav-link" href="contact.html"><span class="tilde">~</span>Contact</a>
@@ -141,17 +210,60 @@ document.addEventListener("mouseleave", () => {
   <a class="nav-link" href="commissions.html"><span class="tilde">~</span>Commissions</a>
   <a class="nav-link" href="live.html"><span class="tilde">~</span>Live</a>
 
+  <p class="font-credit">
+    BIANZHIDAI FONT MADE BY XIAOYUAN GAO
+  </p>
+
 </main>
 
 <script>
 const links = document.querySelectorAll(".nav-link");
 
-const zones = [
+/* Wrap visible nav text in letter spans */
+
+links.forEach(link => {
+  const textNodes = [];
+
+  const walker = document.createTreeWalker(
+    link,
+    NodeFilter.SHOW_TEXT,
+    null
+  );
+
+  while (walker.nextNode()) {
+    textNodes.push(walker.currentNode);
+  }
+
+  textNodes.forEach(node => {
+    const fragment = document.createDocumentFragment();
+
+    [...node.textContent].forEach(char => {
+      const span = document.createElement("span");
+      span.textContent = char;
+      span.className = "font-react-letter";
+      fragment.appendChild(span);
+    });
+
+    node.replaceWith(fragment);
+  });
+});
+
+/* Floating/random nav */
+
+const desktopZones = [
   { x: 18, y: 18 },
   { x: 62, y: 18 },
   { x: 14, y: 62 },
   { x: 58, y: 66 },
   { x: 42, y: 82 }
+];
+
+const mobileZones = [
+  { x: 8, y: 14 },
+  { x: 52, y: 18 },
+  { x: 10, y: 58 },
+  { x: 48, y: 64 },
+  { x: 28, y: 82 }
 ];
 
 function shuffle(array) {
@@ -162,9 +274,22 @@ function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
 }
 
-if (window.innerWidth > 700) {
-  const shuffledZones = shuffle([...zones]);
+const isMobile = window.innerWidth <= 700;
+const activeZones = isMobile ? mobileZones : desktopZones;
+const shuffledZones = shuffle([...activeZones]);
 
+if (isMobile) {
+  links.forEach((link, index) => {
+    const zone = shuffledZones[index];
+
+    const x = zone.x + (Math.random() * 8 - 4);
+    const y = zone.y + (Math.random() * 6 - 3);
+
+    link.style.left = x + "vw";
+    link.style.top = y + "vh";
+    link.style.transform = "none";
+  });
+} else {
   const movers = [];
 
   links.forEach((link, index) => {
@@ -213,6 +338,115 @@ if (window.innerWidth > 700) {
 
   animate();
 }
+
+/* Font-react cursor effect */
+
+const letters = document.querySelectorAll(".font-react-letter");
+const radius = 70;
+
+document.addEventListener("mousemove", e => {
+  letters.forEach(letter => {
+    const rect = letter.getBoundingClientRect();
+
+    const dx = e.clientX - (rect.left + rect.width / 2);
+    const dy = e.clientY - (rect.top + rect.height / 2);
+    const distance = Math.hypot(dx, dy);
+
+    letter.classList.toggle("touched", distance < radius);
+  });
+});
+
+/* Click invert */
+
+const invertTargets = document.querySelectorAll(".nav-link");
+
+invertTargets.forEach(target => {
+
+  target.addEventListener("mouseenter", () => {
+    document.documentElement.classList.add("invert-click");
+  });
+
+  target.addEventListener("mouseleave", () => {
+    document.documentElement.classList.remove("invert-click");
+  });
+
+});
+
+/* Credit ripple */
+
+const credit = document.querySelector(".font-credit");
+
+if (credit) {
+  const text = credit.textContent.trim();
+  credit.innerHTML = "";
+
+  [...text].forEach(char => {
+    const span = document.createElement("span");
+    span.textContent = char === " " ? "\u00A0" : char;
+    span.className = "font-credit-letter";
+    credit.appendChild(span);
+  });
+
+  const creditLetters = document.querySelectorAll(".font-credit-letter");
+
+  function rippleCredit() {
+    creditLetters.forEach((letter, index) => {
+      setTimeout(() => {
+        letter.classList.add("active");
+
+        setTimeout(() => {
+          letter.classList.remove("active");
+        }, 1550);
+      }, index * 55);
+    });
+  }
+
+  rippleCredit();
+  setInterval(rippleCredit, 4000);
+}
+
+/* Fast looping star flicker */
+
+window.addEventListener("load", () => {
+  const star = document.getElementById("homeStar");
+
+  const frames = [
+    "assets/about_star.svg",
+    "assets/live_star.svg",
+    "assets/release_star.svg",
+    "assets/contact_star.svg",
+    "assets/comissions_star.svg"
+  ];
+
+  let currentFrame = "";
+
+  function chooseRandomFrame() {
+    let nextFrame;
+
+    do {
+      nextFrame = frames[Math.floor(Math.random() * frames.length)];
+    } while (nextFrame === currentFrame);
+
+    currentFrame = nextFrame;
+    return nextFrame;
+  }
+
+  function flickerLoop() {
+    star.classList.add("morphing");
+
+    setTimeout(() => {
+      star.src = chooseRandomFrame();
+    }, 45);
+
+    setTimeout(() => {
+      star.classList.remove("morphing");
+    }, 105);
+
+    setTimeout(flickerLoop, 180);
+  }
+
+  flickerLoop();
+});
 </script>
 
 </body>

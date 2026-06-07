@@ -64,6 +64,15 @@ body {
   margin-right: 4px;
 }
 
+.font-react-letter {
+  display: inline-block;
+  transition: font-family 0.08s ease;
+}
+
+.font-react-letter.touched {
+  font-family: "Bianzhidai", monospace;
+}
+
 .profile-image {
   width: 98px;
   display: block;
@@ -106,9 +115,29 @@ body {
   transition: transform .4s ease, opacity .3s ease;
 }
 
+.star {
+  width: 70px;
+  transition: opacity .2s ease;
+}
+
+.star-link {
+  display: inline-block;
+  text-decoration: none;
+  transition: none;
+}
+
+.star-link:hover {
+  opacity: 1;
+  transform: none;
+}
+
+.star {
+  width: 70px;
+  transition: filter .2s ease;
+}
+
 .star-link:hover .star {
-  transform: rotate(90deg) scale(1.08);
-  opacity: .8;
+  filter: blur(4px);
 }
 
 @media (max-width: 600px) {
@@ -135,7 +164,7 @@ body {
   <section class="about-container">
 
     <h1 class="page-title">
-      <span class="tilde">~</span>About
+      <span class="tilde">~</span><span class="reactive-header">About</span>
     </h1>
 
     <img
@@ -180,6 +209,37 @@ body {
 </main>
 
 <script>
+/* Header font-react effect */
+
+document.querySelectorAll(".reactive-header").forEach(element => {
+  const text = element.textContent;
+  element.innerHTML = "";
+
+  [...text].forEach(char => {
+    const span = document.createElement("span");
+    span.textContent = char;
+    span.className = "font-react-letter";
+    element.appendChild(span);
+  });
+});
+
+const letters = document.querySelectorAll(".font-react-letter");
+const radius = 70;
+
+document.addEventListener("mousemove", e => {
+  letters.forEach(letter => {
+    const rect = letter.getBoundingClientRect();
+
+    const dx = e.clientX - (rect.left + rect.width / 2);
+    const dy = e.clientY - (rect.top + rect.height / 2);
+    const distance = Math.hypot(dx, dy);
+
+    letter.classList.toggle("touched", distance < radius);
+  });
+});
+
+/* Click invert, same as index */
+
 document.addEventListener("mousedown", () => {
   document.documentElement.classList.add("invert-click");
 });
