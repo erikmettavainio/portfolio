@@ -144,7 +144,8 @@ body {
   left: 24px;
 }
 
-.font-credit-letter {
+.font-credit-letter,
+.font-credit-letter-anthony {
   display: inline-block;
   transition: font-family 0.12s ease;
 }
@@ -234,6 +235,11 @@ const gradientBands = [];
 
 let backgroundMouseX = window.innerWidth / 2;
 let backgroundMouseY = window.innerHeight / 2;
+
+let gyroX = 0;
+let gyroY = 0;
+let hasGyro = false;
+
 const hasFinePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
 for (let i = 0; i < bandCount; i++) {
@@ -253,6 +259,39 @@ window.addEventListener("mousemove", (e) => {
   backgroundMouseX = e.clientX;
   backgroundMouseY = e.clientY;
 });
+
+function enableGyro() {
+  if (!window.DeviceOrientationEvent) return;
+
+  const startGyro = () => {
+    window.addEventListener("deviceorientation", (e) => {
+      if (e.beta === null || e.gamma === null) return;
+
+      hasGyro = true;
+
+      gyroX = Math.max(-1, Math.min(1, e.gamma / 35));
+      gyroY = Math.max(-1, Math.min(1, e.beta / 45));
+    });
+  };
+
+  if (typeof DeviceOrientationEvent.requestPermission === "function") {
+    const requestGyroPermission = async () => {
+      try {
+        const permission = await DeviceOrientationEvent.requestPermission();
+        if (permission === "granted") startGyro();
+      } catch (error) {
+        console.log("Gyro permission was not granted.");
+      }
+    };
+
+    document.body.addEventListener("click", requestGyroPermission, { once: true });
+    document.body.addEventListener("touchstart", requestGyroPermission, { once: true });
+  } else {
+    startGyro();
+  }
+}
+
+enableGyro();
 
 function animateGradientBackground(time) {
   const width = window.innerWidth;
@@ -274,7 +313,12 @@ function animateGradientBackground(time) {
       targetShift = base + repel;
     } else {
       const wave = Math.sin(time * 0.0007 + i * 0.9) * height * 0.18;
-      targetShift = base + wave;
+
+      const gyroMove = hasGyro
+        ? gyroY * height * 0.35 + gyroX * height * 0.12 * Math.sin(i * 0.9)
+        : 0;
+
+      targetShift = base + wave + gyroMove;
     }
 
     band.currentShift += (targetShift - band.currentShift) * 0.08;
