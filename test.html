@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smooth Zig-Zag Gradient Bands</title>
+
+  <style>
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .background {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      overflow: hidden;
+    }
+
+    .band {
+      flex: 1;
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .band::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: -100%;
+      width: 100%;
+      height: 300%;
+      background: linear-gradient(
+        to bottom,
+        #000 0%,
+        #fff 50%,
+        #000 100%
+      );
+      transform: translateY(var(--shift));
+      will-change: transform;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="background" id="background"></div>
+
+  <script>
+  const bandCount = 8;
+  const background = document.getElementById("background");
+  const bands = [];
+
+  let mouseX = window.innerWidth / 2;
+  let mouseY = window.innerHeight / 2;
+  let hasCursor = false;
+
+  for (let i = 0; i < bandCount; i++) {
+    const band = document.createElement("div");
+    band.className = "band";
+    background.appendChild(band);
+
+    bands.push({
+      element: band,
+      currentShift: 0
+    });
+  }
+
+  window.addEventListener("mousemove", (e) => {
+    hasCursor = true;
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+  });
+
+  function animate(time) {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const bandWidth = width / bandCount;
+
+    bands.forEach((band, i) => {
+      const base = i % 2 === 0 ? -height * 0.25 : height * 0.25;
+
+      let targetShift;
+
+      if (hasCursor) {
+        const bandCenterX = i * bandWidth + bandWidth / 2;
+        const distanceX = Math.abs(mouseX - bandCenterX);
+        const influence = Math.max(0, 1 - distanceX / 400);
+
+        const distanceY = mouseY - height / 2;
+        const repel = -distanceY * influence * 1.1;
+
+        targetShift = base + repel;
+      } else {
+        const wave =
+          Math.sin(time * 0.0007 + i * 0.9) * height * 0.18;
+
+        targetShift = base + wave;
+      }
+
+      band.currentShift += (targetShift - band.currentShift) * 0.08;
+
+      band.element.style.setProperty(
+        "--shift",
+        `${band.currentShift}px`
+      );
+    });
+
+    requestAnimationFrame(animate);
+  }
+
+requestAnimationFrame(animate);
+</script>
+</body>
+</html>
