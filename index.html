@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 
@@ -14,7 +15,7 @@
 <meta name="twitter:title" content="Erik Mettävainio | Electro-acoustic Composer & Sound Artist">
 <meta name="twitter:description" content="Swedish electro-acoustic composer and sound artist based in Stockholm.">
 <meta name="twitter:image" content="https://erikmettavainio.info/preview.jpg">
-  
+
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -30,7 +31,7 @@
 ]
 }
 </script>
-  
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -133,28 +134,6 @@ body {
   transition: opacity .2s ease;
 }
 
-  .listen-oval {
-  position: absolute;
-  z-index: 3;
-  width: 170px;
-  height: 74px;
-  border-radius: 999px;
-  background: #0000ff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  color: #ffffff;
-  font-family: "Bianzhidai", monospace;
-  font-size: 34px;
-  line-height: 1;
-  transition: opacity .2s ease;
-}
-
-.listen-oval:hover {
-  opacity: .75;
-}
-
 .nav-link:hover {
   opacity: .6;
 }
@@ -227,12 +206,6 @@ body {
     overflow: hidden;
   }
 
-  .listen-oval {
-  width: 130px;
-  height: 58px;
-  font-size: 26px;
-}
-
   .home-page {
     width: 100vw;
     height: 100vh;
@@ -264,6 +237,7 @@ body {
   }
 }
 </style>
+
 </head>
 
 <body>
@@ -272,17 +246,7 @@ body {
 
   <div class="gradient-background" id="gradientBackground"></div>
 
-  <a class="nav-link" href="about.html"><span class="tilde">~</span>About</a>
-  <a class="nav-link" href="contact.html"><span class="tilde">~</span>Contact</a>
-  <a class="nav-link" href="releases.html"><span class="tilde">~</span>Releases</a>
-  <a class="nav-link" href="commissions.html"><span class="tilde">~</span>Commissions</a>
-  <a class="nav-link" href="live.html"><span class="tilde">~</span>Live</a>
-  <a
-  class="listen-oval"
-  href="https://erikmettavainio.bandcamp.com"
-  target="_blank"
-  rel="noopener noreferrer"
->~Listen</a>
+<a class="nav-link" href="about.html"><span class="tilde">~</span>About</a><a class="nav-link" href="contact.html"><span class="tilde">~</span>Contact</a><a class="nav-link" href="releases.html"><span class="tilde">~</span>Releases</a><a class="nav-link" href="commissions.html"><span class="tilde">~</span>Commissions</a><a class="nav-link" href="live.html"><span class="tilde">~</span>Live</a>
 
   <p class="font-credit font-credit-anthony">
     ANTHONY FONT MADE BY ANTHONY CARO
@@ -400,7 +364,7 @@ function animateGradientBackground(time) {
 
 requestAnimationFrame(animateGradientBackground);
 
-const links = document.querySelectorAll(".nav-link, .listen-oval");
+const links = document.querySelectorAll(".nav-link");
 
 /* Wrap visible nav text in letter spans */
 
