@@ -133,6 +133,28 @@ body {
   transition: opacity .2s ease;
 }
 
+  .listen-oval {
+  position: absolute;
+  z-index: 3;
+  width: 170px;
+  height: 74px;
+  border-radius: 999px;
+  background: #0000ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: #ffffff;
+  font-family: "Bianzhidai", monospace;
+  font-size: 34px;
+  line-height: 1;
+  transition: opacity .2s ease;
+}
+
+.listen-oval:hover {
+  opacity: .75;
+}
+
 .nav-link:hover {
   opacity: .6;
 }
@@ -205,6 +227,12 @@ body {
     overflow: hidden;
   }
 
+  .listen-oval {
+  width: 130px;
+  height: 58px;
+  font-size: 26px;
+}
+
   .home-page {
     width: 100vw;
     height: 100vh;
@@ -249,6 +277,12 @@ body {
   <a class="nav-link" href="releases.html"><span class="tilde">~</span>Releases</a>
   <a class="nav-link" href="commissions.html"><span class="tilde">~</span>Commissions</a>
   <a class="nav-link" href="live.html"><span class="tilde">~</span>Live</a>
+  <a
+  class="listen-oval"
+  href="https://erikmettavainio.bandcamp.com"
+  target="_blank"
+  rel="noopener noreferrer"
+>~Listen</a>
 
   <p class="font-credit font-credit-anthony">
     ANTHONY FONT MADE BY ANTHONY CARO
@@ -366,7 +400,7 @@ function animateGradientBackground(time) {
 
 requestAnimationFrame(animateGradientBackground);
 
-const links = document.querySelectorAll(".nav-link");
+const links = document.querySelectorAll(".nav-link, .listen-oval");
 
 /* Wrap visible nav text in letter spans */
 
