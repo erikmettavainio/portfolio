@@ -7,7 +7,7 @@
 <link rel="icon" type="image/png" href="favicon.png">
 
 <title>Live — Erik Mettävainio</title>
-  <meta name="description"
+<meta name="description"
 content="Erik Mettävainio is a Swedish electro-acoustic composer based in Stockholm.">
 
 <style>
@@ -150,9 +150,19 @@ body {
   letter-spacing: 0.03em;
 }
 
+/* Basic video frame */
 .video-frame {
   width: 100%;
+}
+
+/* Vertical YouTube Shorts */
+.video-frame.short {
   aspect-ratio: 9 / 16;
+}
+
+/* Normal landscape YouTube video */
+.video-frame.landscape {
+  aspect-ratio: 16 / 9;
 }
 
 .video-frame iframe {
@@ -188,8 +198,8 @@ body {
   <section class="live-container">
 
     <h1 class="page-title">
-  <span class="tilde">~</span><span class="reactive-header">Live</span>
-</h1>
+      <span class="tilde">~</span><span class="reactive-header">Live</span>
+    </h1>
 
     <p class="year">2027</p>
 
@@ -207,49 +217,52 @@ body {
 
     <section class="video-section">
 
-  <p class="video-title">LISTEN</p>
+      <p class="video-title">LISTEN</p>
 
-  <article class="video-card">
-    <div class="video-frame">
-      <iframe
-        src="https://www.youtube.com/embed/UR6dMNI-5Qo"
-        title="Ray Tracing — Live performance"
-        allowfullscreen>
-      </iframe>
+      <!-- Vertical video -->
+      <article class="video-card">
+        <div class="video-frame short">
+          <iframe
+            src="https://www.youtube.com/embed/UR6dMNI-5Qo"
+            title="Ray Tracing — Live performance"
+            allowfullscreen>
+          </iframe>
+        </div>
+      </article>
+
+      <!-- Vertical video -->
+      <article class="video-card">
+        <div class="video-frame short">
+          <iframe
+            src="https://www.youtube.com/embed/R8avauCXcyI"
+            title="Alkimia — Live performance"
+            allowfullscreen>
+          </iframe>
+        </div>
+      </article>
+
+      <!-- Landscape video -->
+      <article class="video-card">
+        <div class="video-frame landscape">
+          <iframe
+            src="https://www.youtube.com/embed/uyOJNAVHhcw"
+            title="Live performance"
+            allowfullscreen>
+          </iframe>
+        </div>
+      </article>
+
+    </section>
+
+    <div class="star-wrapper">
+      <a href="index.html" class="star-link">
+        <img
+          class="star"
+          src="assets/about_star.svg"
+          alt="Home"
+        >
+      </a>
     </div>
-  </article>
-
-  <article class="video-card">
-    <div class="video-frame">
-      <iframe
-        src="https://www.youtube.com/embed/R8avauCXcyI"
-        title="Alkimia — Live performance"
-        allowfullscreen>
-      </iframe>
-    </div>
-  </article>
-
-  <article class="video-card">
-    <div class="video-frame">
-      <iframe
-        src="https://youtu.be/W61luqREjGI"
-        title="Live performance"
-        allowfullscreen>
-      </iframe>
-    </div>
-  </article>
-
-</section>
-
-   <div class="star-wrapper">
-  <a href="index.html" class="star-link">
-    <img
-      class="star"
-      src="assets/about_star.svg"
-      alt="Home"
-    >
-  </a>
-</div>
 
   </section>
 </main>
