@@ -150,19 +150,9 @@ body {
   letter-spacing: 0.03em;
 }
 
-/* Basic video frame */
 .video-frame {
   width: 100%;
-}
-
-/* Vertical YouTube Shorts */
-.video-frame.short {
   aspect-ratio: 9 / 16;
-}
-
-/* Normal landscape YouTube video */
-.video-frame.landscape {
-  aspect-ratio: 16 / 9;
 }
 
 .video-frame iframe {
@@ -219,9 +209,8 @@ body {
 
       <p class="video-title">LISTEN</p>
 
-      <!-- Vertical video -->
       <article class="video-card">
-        <div class="video-frame short">
+        <div class="video-frame">
           <iframe
             src="https://www.youtube.com/embed/UR6dMNI-5Qo"
             title="Ray Tracing — Live performance"
@@ -230,9 +219,8 @@ body {
         </div>
       </article>
 
-      <!-- Vertical video -->
       <article class="video-card">
-        <div class="video-frame short">
+        <div class="video-frame">
           <iframe
             src="https://www.youtube.com/embed/R8avauCXcyI"
             title="Alkimia — Live performance"
@@ -241,11 +229,10 @@ body {
         </div>
       </article>
 
-      <!-- Landscape video -->
       <article class="video-card">
-        <div class="video-frame landscape">
+        <div class="video-frame">
           <iframe
-            src="https://youtu.be/W61luqREjGI"
+            src="https://www.youtube.com/embed/Fvp_b9rYU88"
             title="Live performance"
             allowfullscreen>
           </iframe>
