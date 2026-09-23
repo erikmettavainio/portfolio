@@ -86,16 +86,18 @@ body {
   position: relative;
 }
 
-/* FULL-SCREEN CIRCLE GRID */
+/* BACKGROUND */
 .gradient-background {
   position: fixed;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
   z-index: 0;
   pointer-events: none;
-  background: #eeeeee;
+  overflow: hidden;
+}
+.gradient-background canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 /* NAVIGATION */
@@ -221,7 +223,7 @@ body {
 
 <main class="home-page">
 
-  <canvas class="gradient-background" id="gradientBackground" aria-hidden="true"></canvas>
+  <div class="gradient-background" id="gradientBackground"><canvas id="shapeCanvas" aria-hidden="true"></canvas></div>
 
 <a class="nav-link" href="about.html"><span class="tilde">~</span>About</a><a class="nav-link" href="contact.html"><span class="tilde">~</span>Contact</a><a class="nav-link" href="releases.html"><span class="tilde">~</span>Releases</a><a class="nav-link" href="commissions.html"><span class="tilde">~</span>Commissions</a><a class="nav-link" href="live.html"><span class="tilde">~</span>Live</a>
 
@@ -236,100 +238,80 @@ body {
 </main>
 
 <script>
-/* Touching circles with a cursor-driven ordered-dither field. */
-const canvas = document.getElementById("gradientBackground");
+/* Circle-to-square background. Adjust CELL and INFLUENCE_RADIUS to taste. */
+const canvas = document.getElementById("shapeCanvas");
 const ctx = canvas.getContext("2d", { alpha: false });
-const DIAMETER = 18; // Change this to 12 for finer dots, 24 for larger dots.
-const RADIUS = DIAMETER / 2;
-const BAYER = [
-  [0, 8, 2, 10],
-  [12, 4, 14, 6],
-  [3, 11, 1, 9],
-  [15, 7, 13, 5]
-];
-let gridWidth = 0;
-let gridHeight = 0;
-let columns = 0;
-let rows = 0;
-let mouseX = 0;
-let mouseY = 0;
-let targetX = 0;
-let targetY = 0;
-let pointerActive = false;
-let frame = 0;
+const CELL = 20;
+const INFLUENCE_RADIUS = 190;
+const SHAPE_COLOR = "#999999";
+const BACKGROUND_COLOR = "#ffffff";
+const pointer = { x: -10000, y: -10000, active: false };
+let width = 0, height = 0, columns = 0, rows = 0;
+let morph = [];
 
-function resizeCircles() {
+function resizeGrid() {
+  width = window.innerWidth;
+  height = window.innerHeight;
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  gridWidth = window.innerWidth;
-  gridHeight = window.innerHeight;
-  canvas.width = Math.round(gridWidth * dpr);
-  canvas.height = Math.round(gridHeight * dpr);
-  canvas.style.width = gridWidth + "px";
-  canvas.style.height = gridHeight + "px";
+  canvas.width = Math.round(width * dpr);
+  canvas.height = Math.round(height * dpr);
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  columns = Math.ceil(gridWidth / DIAMETER) + 1;
-  rows = Math.ceil(gridHeight / DIAMETER) + 1;
-  if (!pointerActive) {
-    mouseX = targetX = gridWidth / 2;
-    mouseY = targetY = gridHeight / 2;
-  }
+  columns = Math.ceil(width / CELL);
+  rows = Math.ceil(height / CELL);
+  morph = new Float32Array(columns * rows);
+}
+window.addEventListener("resize", resizeGrid);
+resizeGrid();
+
+window.addEventListener("pointermove", e => {
+  pointer.x = e.clientX;
+  pointer.y = e.clientY;
+  pointer.active = true;
+}, { passive: true });
+window.addEventListener("pointerleave", () => { pointer.active = false; });
+window.addEventListener("pointercancel", () => { pointer.active = false; });
+
+function roundedSquare(x, y, size, radius) {
+  const right = x + size, bottom = y + size;
+  ctx.moveTo(x + radius, y);
+  ctx.lineTo(right - radius, y);
+  ctx.quadraticCurveTo(right, y, right, y + radius);
+  ctx.lineTo(right, bottom - radius);
+  ctx.quadraticCurveTo(right, bottom, right - radius, bottom);
+  ctx.lineTo(x + radius, bottom);
+  ctx.quadraticCurveTo(x, bottom, x, bottom - radius);
+  ctx.lineTo(x, y + radius);
+  ctx.quadraticCurveTo(x, y, x + radius, y);
+  ctx.closePath();
 }
 
-window.addEventListener("resize", resizeCircles);
-window.addEventListener("pointermove", event => {
-  targetX = event.clientX;
-  targetY = event.clientY;
-  pointerActive = true;
-});
-window.addEventListener("pointerleave", () => { pointerActive = false; });
-resizeCircles();
-
-function drawCircles() {
-  frame++;
-  if (!pointerActive) {
-    targetX = gridWidth / 2 + Math.sin(frame * 0.006) * gridWidth * 0.22;
-    targetY = gridHeight / 2 + Math.cos(frame * 0.004) * gridHeight * 0.20;
-  }
-  mouseX += (targetX - mouseX) * 0.09;
-  mouseY += (targetY - mouseY) * 0.09;
-  ctx.fillStyle = "#ededed";
-  ctx.fillRect(0, 0, gridWidth, gridHeight);
+function animateShapeGrid() {
+  ctx.fillStyle = BACKGROUND_COLOR;
+  ctx.fillRect(0, 0, width, height);
+  ctx.fillStyle = SHAPE_COLOR;
+  ctx.beginPath();
 
   for (let row = 0; row < rows; row++) {
-    const cy = RADIUS + row * DIAMETER;
     for (let col = 0; col < columns; col++) {
-      const cx = RADIUS + col * DIAMETER;
-      const dx = cx - mouseX;
-      const dy = cy - mouseY;
+      const x = col * CELL, y = row * CELL;
+      const dx = x + CELL / 2 - pointer.x;
+      const dy = y + CELL / 2 - pointer.y;
       const distance = Math.hypot(dx, dy);
-      const influence = Math.max(0, 1 - distance / 260);
-      const smooth = influence * influence * (3 - 2 * influence);
-
-      // A 4x4 Bayer threshold makes the mouse field break into ordered dots.
-      const threshold = (BAYER[row % 4][col % 4] + 0.5) / 16;
-      const dither = smooth > threshold ? 1 : 0;
-      const shade = Math.round(196 - dither * 94 - smooth * 12);
-      const white = Math.round(250 - dither * 12);
-      const direction = Math.atan2(dy, dx) + Math.PI / 2;
-      const shift = smooth * RADIUS * 0.7;
-      const gx = cx + Math.cos(direction) * shift;
-      const gy = cy + Math.sin(direction) * shift;
-
-      const gradient = ctx.createRadialGradient(
-        gx - RADIUS * 0.32, gy - RADIUS * 0.32, 0,
-        gx, gy, RADIUS * 1.32
-      );
-      gradient.addColorStop(0, `rgb(${white},${white},${white})`);
-      gradient.addColorStop(1, `rgb(${shade},${shade},${shade})`);
-      ctx.beginPath();
-      ctx.arc(cx, cy, RADIUS, 0, Math.PI * 2);
-      ctx.fillStyle = gradient;
-      ctx.fill();
+      const proximity = pointer.active
+        ? Math.max(0, Math.min(1, (INFLUENCE_RADIUS - distance) / INFLUENCE_RADIUS))
+        : 0;
+      // Smooth falloff, with fully square cells immediately around the cursor.
+      const target = proximity * proximity * (3 - 2 * proximity);
+      const index = row * columns + col;
+      morph[index] += (target - morph[index]) * 0.16;
+      const radius = (CELL / 2) * (1 - morph[index]);
+      roundedSquare(x, y, CELL, radius);
     }
   }
-  requestAnimationFrame(drawCircles);
+  ctx.fill();
+  requestAnimationFrame(animateShapeGrid);
 }
-requestAnimationFrame(drawCircles);
+requestAnimationFrame(animateShapeGrid);
 
 const links = document.querySelectorAll(".nav-link");
 
