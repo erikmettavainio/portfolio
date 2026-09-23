@@ -238,7 +238,7 @@ body {
 </main>
 
 <script>
-/* Circle-to-square background. Adjust CELL and INFLUENCE_RADIUS to taste. */
+/* Optimized circle-to-square background: static grid + small dirty region. */
 const canvas = document.getElementById("shapeCanvas");
 const ctx = canvas.getContext("2d", { alpha: false });
 const CELL = 20;
@@ -246,72 +246,132 @@ const INFLUENCE_RADIUS = 190;
 const SHAPE_COLOR = "#999999";
 const BACKGROUND_COLOR = "#ffffff";
 const pointer = { x: -10000, y: -10000, active: false };
-let width = 0, height = 0, columns = 0, rows = 0;
-let morph = [];
+const staticCanvas = document.createElement("canvas");
+const staticCtx = staticCanvas.getContext("2d", { alpha: false });
+let width, height, columns, rows, dpr, morph, dirty = null, framePending = false;
+
+function drawShape(context, x, y, radius) {
+  const r = radius, right = x + CELL, bottom = y + CELL;
+  context.moveTo(x + r, y);
+  context.lineTo(right - r, y);
+  context.quadraticCurveTo(right, y, right, y + r);
+  context.lineTo(right, bottom - r);
+  context.quadraticCurveTo(right, bottom, right - r, bottom);
+  context.lineTo(x + r, bottom);
+  context.quadraticCurveTo(x, bottom, x, bottom - r);
+  context.lineTo(x, y + r);
+  context.quadraticCurveTo(x, y, x + r, y);
+  context.closePath();
+}
 
 function resizeGrid() {
   width = window.innerWidth;
   height = window.innerHeight;
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  canvas.width = Math.round(width * dpr);
-  canvas.height = Math.round(height * dpr);
+  // One canvas pixel per CSS pixel keeps the background light on high-DPI screens.
+  dpr = 1;
+  canvas.width = staticCanvas.width = Math.ceil(width * dpr);
+  canvas.height = staticCanvas.height = Math.ceil(height * dpr);
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  staticCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
   columns = Math.ceil(width / CELL);
   rows = Math.ceil(height / CELL);
   morph = new Float32Array(columns * rows);
+  staticCtx.fillStyle = BACKGROUND_COLOR;
+  staticCtx.fillRect(0, 0, width, height);
+  staticCtx.fillStyle = SHAPE_COLOR;
+  staticCtx.beginPath();
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < columns; col++) {
+      drawShape(staticCtx, col * CELL, row * CELL, CELL / 2);
+    }
+  }
+  staticCtx.fill();
+  ctx.drawImage(staticCanvas, 0, 0);
+  dirty = null;
+  requestDraw();
 }
-window.addEventListener("resize", resizeGrid);
-resizeGrid();
 
+function pointerRegion() {
+  if (!pointer.active) return null;
+  return {
+    left: Math.max(0, Math.floor((pointer.x - INFLUENCE_RADIUS) / CELL)),
+    top: Math.max(0, Math.floor((pointer.y - INFLUENCE_RADIUS) / CELL)),
+    right: Math.min(columns - 1, Math.floor((pointer.x + INFLUENCE_RADIUS) / CELL)),
+    bottom: Math.min(rows - 1, Math.floor((pointer.y + INFLUENCE_RADIUS) / CELL))
+  };
+}
+
+function requestDraw() {
+  if (!framePending) {
+    framePending = true;
+    requestAnimationFrame(drawGrid);
+  }
+}
+
+function drawGrid() {
+  framePending = false;
+  const region = pointerRegion();
+  if (!region && !dirty) return;
+  // Redraw only the previous and current cursor areas, not the entire screen.
+  const area = dirty && region ? {
+    left: Math.min(dirty.left, region.left),
+    top: Math.min(dirty.top, region.top),
+    right: Math.max(dirty.right, region.right),
+    bottom: Math.max(dirty.bottom, region.bottom)
+  } : (dirty || region);
+  const x = area.left * CELL, y = area.top * CELL;
+  const w = Math.min(width - x, (area.right - area.left + 1) * CELL);
+  const h = Math.min(height - y, (area.bottom - area.top + 1) * CELL);
+  ctx.drawImage(staticCanvas, x, y, w, h, x, y, w, h);
+  ctx.fillStyle = SHAPE_COLOR;
+  ctx.beginPath();
+  let stillMoving = false;
+  let nextDirty = null;
+  for (let row = area.top; row <= area.bottom; row++) {
+    for (let col = area.left; col <= area.right; col++) {
+      const index = row * columns + col;
+      let target = 0;
+      if (region && col >= region.left && col <= region.right && row >= region.top && row <= region.bottom) {
+        const dx = (col + 0.5) * CELL - pointer.x;
+        const dy = (row + 0.5) * CELL - pointer.y;
+        const proximity = Math.max(0, 1 - Math.sqrt(dx * dx + dy * dy) / INFLUENCE_RADIUS);
+        target = proximity * proximity * (3 - 2 * proximity);
+      }
+      let value = morph[index];
+      if (Math.abs(target - value) > 0.004) {
+        value += (target - value) * 0.24;
+        stillMoving = true;
+      } else {
+        value = target;
+      }
+      morph[index] = value;
+      if (value > 0.001) {
+        drawShape(ctx, col * CELL, row * CELL, CELL * 0.5 * (1 - value));
+        if (!nextDirty) nextDirty = { left: col, right: col, top: row, bottom: row };
+        else {
+          nextDirty.left = Math.min(nextDirty.left, col);
+          nextDirty.right = Math.max(nextDirty.right, col);
+          nextDirty.top = Math.min(nextDirty.top, row);
+          nextDirty.bottom = Math.max(nextDirty.bottom, row);
+        }
+      }
+    }
+  }
+  ctx.fill();
+  dirty = nextDirty;
+  if (stillMoving) requestDraw();
+}
+
+window.addEventListener("resize", resizeGrid);
 window.addEventListener("pointermove", e => {
   pointer.x = e.clientX;
   pointer.y = e.clientY;
   pointer.active = true;
+  requestDraw();
 }, { passive: true });
-window.addEventListener("pointerleave", () => { pointer.active = false; });
-window.addEventListener("pointercancel", () => { pointer.active = false; });
-
-function roundedSquare(x, y, size, radius) {
-  const right = x + size, bottom = y + size;
-  ctx.moveTo(x + radius, y);
-  ctx.lineTo(right - radius, y);
-  ctx.quadraticCurveTo(right, y, right, y + radius);
-  ctx.lineTo(right, bottom - radius);
-  ctx.quadraticCurveTo(right, bottom, right - radius, bottom);
-  ctx.lineTo(x + radius, bottom);
-  ctx.quadraticCurveTo(x, bottom, x, bottom - radius);
-  ctx.lineTo(x, y + radius);
-  ctx.quadraticCurveTo(x, y, x + radius, y);
-  ctx.closePath();
-}
-
-function animateShapeGrid() {
-  ctx.fillStyle = BACKGROUND_COLOR;
-  ctx.fillRect(0, 0, width, height);
-  ctx.fillStyle = SHAPE_COLOR;
-  ctx.beginPath();
-
-  for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < columns; col++) {
-      const x = col * CELL, y = row * CELL;
-      const dx = x + CELL / 2 - pointer.x;
-      const dy = y + CELL / 2 - pointer.y;
-      const distance = Math.hypot(dx, dy);
-      const proximity = pointer.active
-        ? Math.max(0, Math.min(1, (INFLUENCE_RADIUS - distance) / INFLUENCE_RADIUS))
-        : 0;
-      // Smooth falloff, with fully square cells immediately around the cursor.
-      const target = proximity * proximity * (3 - 2 * proximity);
-      const index = row * columns + col;
-      morph[index] += (target - morph[index]) * 0.16;
-      const radius = (CELL / 2) * (1 - morph[index]);
-      roundedSquare(x, y, CELL, radius);
-    }
-  }
-  ctx.fill();
-  requestAnimationFrame(animateShapeGrid);
-}
-requestAnimationFrame(animateShapeGrid);
+window.addEventListener("pointerleave", () => { pointer.active = false; requestDraw(); });
+window.addEventListener("pointercancel", () => { pointer.active = false; requestDraw(); });
+resizeGrid();
 
 const links = document.querySelectorAll(".nav-link");
 
